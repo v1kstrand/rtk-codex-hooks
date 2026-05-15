@@ -1,0 +1,17 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "^Bash$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "RTK_CODEX_HOOK_MODE=deny /usr/bin/python3 /path/to/rtk-codex-hooks/src/rtk_codex_hooks/hook.py",
+            "timeout": 5,
+            "statusMessage": "Suggesting RTK for noisy command"
+          }
+        ]
+      }
+    ]
+  }
+}

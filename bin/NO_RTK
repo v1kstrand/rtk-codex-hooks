@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+export RTK_DISABLED=1
+
+if [ "${1:-}" = "--" ]; then
+  shift
+  exec /bin/bash -lc "$*"
+fi
+
+exec "$@"
+

@@ -1,0 +1,9 @@
+[project]
+name = "rtk-codex-hooks"
+version = "0.1.0"
+description = "Experimental Codex hooks for RTK deny-with-suggestion flow"
+requires-python = ">=3.10"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
