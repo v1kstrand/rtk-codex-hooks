@@ -163,7 +163,9 @@ The examples in `examples/rtk-guard.*.json` can be copied into a project's
 
 ## Global Setup
 
-You can also install RTK Codex Guard globally:
+You can also install RTK Codex Guard for your current computer user. In this
+repo, "global" means Codex can see the hook from any project you open as that
+same Linux/macOS user. It does not mean every user on the machine.
 
 ```bash
 cd /path/to/rtk-codex-hooks
@@ -176,8 +178,8 @@ This creates or updates:
 ~/.codex/hooks.json
 ```
 
-Use global setup if you want the guard available in all Codex projects for
-your current Linux/macOS user.
+Use this if you want the guard available across most or all of your Codex
+projects.
 
 Important: once you trust and enable a global hook in Codex, that choice may
 persist across future Codex sessions. If you only want to try the guard in one
