@@ -1,4 +1,3 @@
 """Experimental Codex hooks for RTK."""
 
-__all__ = ["hook"]
-
+__all__ = ["hook", "policy"]

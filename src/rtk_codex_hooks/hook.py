@@ -17,6 +17,12 @@ import sys
 import time
 from dataclasses import dataclass
 
+try:
+    from rtk_codex_hooks import policy
+except ModuleNotFoundError:
+    sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
+    from rtk_codex_hooks import policy
+
 
 DEFAULT_RTK = "/root/.local/bin/rtk"
 PROJECT_ROOT = pathlib.Path(__file__).resolve().parents[2]
@@ -73,6 +79,9 @@ def decide(payload: dict) -> Decision:
     if is_bypass(command):
         return Decision("allow")
 
+    if not policy.should_consider(command):
+        return Decision("allow")
+
     rewritten = rtk_rewrite(command)
     if rewritten is None or rewritten == command:
         return Decision("allow")
@@ -94,6 +103,7 @@ def decide(payload: dict) -> Decision:
 def is_bypass(command: str) -> bool:
     stripped = command.lstrip()
     no_rtk_bin = os.environ.get("NO_RTK_BIN", DEFAULT_NO_RTK)
+    rtk_bin = os.environ.get("RTK_BIN", DEFAULT_RTK)
     return (
         "RTK_DISABLED=1" in command
         or stripped.startswith("NO_RTK ")
@@ -101,8 +111,9 @@ def is_bypass(command: str) -> bool:
         or stripped.startswith(f"{shlex.quote(no_rtk_bin)} ")
         or stripped == "rtk"
         or stripped.startswith("rtk ")
-        or stripped == DEFAULT_RTK
-        or stripped.startswith(f"{DEFAULT_RTK} ")
+        or stripped == rtk_bin
+        or stripped.startswith(f"{rtk_bin} ")
+        or stripped.startswith(f"{shlex.quote(rtk_bin)} ")
     )
 
 

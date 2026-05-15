@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "RTK_CODEX_HOOK_MODE=deny /usr/bin/python3 /path/to/rtk-codex-hooks/src/rtk_codex_hooks/hook.py",
+            "command": "RTK_CODEX_HOOK_MODE=deny RTK_BIN=/root/.local/bin/rtk NO_RTK_BIN=/path/to/rtk-codex-hooks/bin/NO_RTK /usr/bin/python3 /path/to/rtk-codex-hooks/src/rtk_codex_hooks/hook.py",
             "timeout": 5,
             "statusMessage": "Suggesting RTK for noisy command"
           }

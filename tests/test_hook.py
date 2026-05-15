@@ -33,6 +33,11 @@ class HookDecisionTests(unittest.TestCase):
         decision = hook.decide(payload(f"{hook.DEFAULT_NO_RTK} -- 'git diff'"))
         self.assertEqual(decision.action, "allow")
 
+    @mock.patch.dict(os.environ, {"RTK_BIN": "/opt/bin/rtk"})
+    def test_allows_custom_rtk_binary(self):
+        decision = hook.decide(payload("/opt/bin/rtk git diff"))
+        self.assertEqual(decision.action, "allow")
+
     @mock.patch("rtk_codex_hooks.hook.rtk_rewrite", return_value="rtk git diff")
     def test_denies_with_rtk_and_raw_suggestions(self, _rewrite):
         decision = hook.decide(payload("git diff"))
@@ -40,6 +45,12 @@ class HookDecisionTests(unittest.TestCase):
         self.assertIn("/root/.local/bin/rtk git diff", decision.reason)
         self.assertIn("NO_RTK", decision.reason)
         self.assertIn("git diff", decision.reason)
+
+    @mock.patch("rtk_codex_hooks.hook.rtk_rewrite", return_value="rtk echo hello")
+    def test_allows_small_commands_without_asking_rtk(self, rewrite):
+        decision = hook.decide(payload("echo hello"))
+        self.assertEqual(decision.action, "allow")
+        rewrite.assert_not_called()
 
     def test_replaces_segment_initial_rtk(self):
         self.assertEqual(
