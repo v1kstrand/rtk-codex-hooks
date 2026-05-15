@@ -41,19 +41,84 @@ rtk --version
 python3 --version
 ```
 
-## Install
+## Recommended Setup
 
-Install into the current project:
+There are two ways to use this project:
+
+- **Project setup:** use RTK Codex Guard in one repo only. This is the
+  recommended choice for most people.
+- **Global setup:** make RTK Codex Guard available everywhere Codex runs for
+  your current computer user. Use this only if you already know you want it in
+  most of your Codex sessions.
+
+Most users should install RTK Codex Guard into one project at a time. That
+means it only affects Codex when you are working inside that project.
+
+First download this repo somewhere on your computer:
 
 ```bash
-python3 install.py --target project
+git clone https://github.com/v1kstrand/rtk-codex-hooks.git
 ```
 
-Or install globally for the current Codex user:
+You can also use GitHub's **Download ZIP** button and unpack it somewhere
+instead.
+
+Then go to the project where you want to use it:
 
 ```bash
+cd /path/to/your/project
+```
+
+Install the hook into that project:
+
+```bash
+python3 /path/to/rtk-codex-hooks/install.py --target project
+```
+
+This creates or updates:
+
+```text
+/path/to/your/project/.codex/hooks.json
+```
+
+Now start Codex from that same project:
+
+```bash
+codex
+```
+
+Open:
+
+```text
+/hooks
+```
+
+Review, trust, and enable the hook.
+
+This is the safest default because it does not change how Codex behaves in
+your other projects.
+
+## Global Setup
+
+You can also install RTK Codex Guard globally:
+
+```bash
+cd /path/to/rtk-codex-hooks
 python3 install.py --target user
 ```
+
+This creates or updates:
+
+```text
+~/.codex/hooks.json
+```
+
+Use global setup if you want the guard available in all Codex projects for
+your current Linux/macOS user.
+
+Important: once you trust and enable a global hook in Codex, that choice may
+persist across future Codex sessions. If you only want to try the guard in one
+repo, use the project setup above instead.
 
 By default the installer:
 
@@ -61,7 +126,7 @@ By default the installer:
 - merges this hook with existing `PreToolUse` hooks
 - installs `NO_RTK` to `~/.local/bin/NO_RTK`
 
-Then restart Codex, open `/hooks`, and trust/enable the hook named:
+In `/hooks`, look for the hook named:
 
 ```text
 RTK Codex Guard
@@ -109,10 +174,18 @@ Need raw output? Retry with: /path/to/bin/NO_RTK -- 'git diff'.
 
 ## Uninstall
 
-Remove this project’s hook entry while keeping unrelated hooks:
+Remove a project install while keeping unrelated hooks:
 
 ```bash
-python3 uninstall.py --target project
+cd /path/to/your/project
+python3 /path/to/rtk-codex-hooks/uninstall.py --target project
+```
+
+Remove a global install:
+
+```bash
+cd /path/to/rtk-codex-hooks
+python3 uninstall.py --target user
 ```
 
 Use `/hooks` to disable it manually if you prefer.
