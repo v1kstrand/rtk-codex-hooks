@@ -130,45 +130,14 @@ still only blocks a command when RTK actually knows how to rewrite it.
 
 ### Project Config
 
-For a project-specific setup, you can fine-tune behavior with:
+For project-specific behavior, add:
 
 ```text
 .codex/rtk-guard.json
 ```
 
-Use this when one repo needs different behavior from your normal preset.
-
-Example 1: choose a preset for this repo:
-
-```json
-{
-  "preset": "minimal"
-}
-```
-
-Example 2: let one command stay raw:
-
-```json
-{
-  "preset": "default",
-  "allow_prefixes": ["git diff"]
-}
-```
-
-This means `git diff` will run normally instead of being routed through RTK.
-
-Example 3: add extra commands for this repo:
-
-```json
-{
-  "preset": "default",
-  "candidate_prefixes": ["terraform plan", "make test"]
-}
-```
-
-This means the guard will also ask RTK about `terraform plan` and `make test`.
-
-Example 4: combine both:
+Use this when one repo needs a different preset, extra RTK candidates, or a few
+commands that should stay raw.
 
 ```json
 {
@@ -178,12 +147,15 @@ Example 4: combine both:
 }
 ```
 
-Available config fields:
+In this example, the repo uses the `default` preset, lets `git diff` run raw,
+and also asks RTK about `terraform plan` and `make test`.
+
+Fields:
 
 | Field | Meaning |
 | --- | --- |
 | `preset` | One of `minimal`, `default`, or `full` |
-| `allow_prefixes` | Commands that should stay raw |
+| `allow_prefixes` | Commands that should run raw |
 | `candidate_prefixes` | Extra commands that should be checked with RTK |
 
 The examples in `examples/rtk-guard.*.json` can be copied into a project's
