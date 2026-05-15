@@ -29,7 +29,8 @@ commands being run.
 
 - `AGENTS.md` guidance can be forgotten. A trusted hook cannot.
 - RTK is the default for supported noisy commands.
-- `NO_RTK` gives Codex a full-fidelity escape hatch when raw output is needed.
+- Raw command output is still available when the compact RTK output is not
+  enough.
 
 ## Install Prerequisites
 
