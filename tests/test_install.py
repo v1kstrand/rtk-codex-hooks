@@ -12,7 +12,10 @@ import uninstall
 class InstallConfigTests(unittest.TestCase):
     def test_hooks_json_points_at_checkout_hook(self):
         config = install.hooks_json()
-        handler = config["hooks"]["PreToolUse"][0]["hooks"][0]
+        group = config["hooks"]["PreToolUse"][0]
+        handler = group["hooks"][0]
+        self.assertEqual(group["displayName"], install.DISPLAY_NAME)
+        self.assertEqual(group["description"], install.DESCRIPTION)
         self.assertEqual(handler["type"], "command")
         self.assertIn("RTK_CODEX_HOOK_MODE=deny", handler["command"])
         self.assertIn(str(install.HOOK), handler["command"])

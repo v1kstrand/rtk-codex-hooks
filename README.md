@@ -64,8 +64,11 @@ By default the installer:
 Then restart Codex, open `/hooks`, and trust/enable the hook named:
 
 ```text
-Suggesting RTK for noisy command
+RTK Codex Guard
 ```
+
+Some Codex versions still show numbered rows such as `Hook 1`; in that case,
+check the detail field `Status`/`Command` for `Suggesting RTK for noisy command`.
 
 ## Test The Flow
 

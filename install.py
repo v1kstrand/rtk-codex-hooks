@@ -17,6 +17,8 @@ ROOT = pathlib.Path(__file__).resolve().parent
 HOOK = ROOT / "src" / "rtk_codex_hooks" / "hook.py"
 WRAPPER = ROOT / "bin" / "NO_RTK"
 STATUS_MESSAGE = "Suggesting RTK for noisy command"
+DISPLAY_NAME = "RTK Codex Guard"
+DESCRIPTION = "Blocks supported noisy Bash commands and suggests RTK retries."
 
 
 def main() -> int:
@@ -71,7 +73,7 @@ def main() -> int:
 
     print(f"installed Codex hook config: {target_file}")
     print("Next: restart Codex, open /hooks, trust and enable:")
-    print(f"  {STATUS_MESSAGE}")
+    print(f"  {DISPLAY_NAME}")
     return 0
 
 
@@ -112,6 +114,8 @@ def hooks_json(no_rtk_bin: str | None = None, rtk_bin: str | None = None) -> dic
         "hooks": {
             "PreToolUse": [
                 {
+                    "displayName": DISPLAY_NAME,
+                    "description": DESCRIPTION,
                     "matcher": "^Bash$",
                     "hooks": [
                         {

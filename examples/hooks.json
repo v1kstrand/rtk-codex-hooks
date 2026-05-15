@@ -2,6 +2,8 @@
   "hooks": {
     "PreToolUse": [
       {
+        "displayName": "RTK Codex Guard",
+        "description": "Blocks supported noisy Bash commands and suggests RTK retries.",
         "matcher": "^Bash$",
         "hooks": [
           {
