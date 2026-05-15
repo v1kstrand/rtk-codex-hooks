@@ -25,19 +25,6 @@ most noticeable examples they highlight are search and git commands around
 `npm test` around 90% smaller. Actual savings will depend on the project and
 commands being run.
 
-## Behavior
-
-```text
-Codex proposes a noisy shell command
-Codex handler runs this PreToolUse hook
-Hook asks `rtk rewrite` for the compact command
-Handler blocks the raw command
-Codex sees: retry with RTK, or use NO_RTK for raw output
-```
-
-This is not a transparent Claude-style rewrite. It is a Codex-specific guard
-that makes the RTK choice explicit.
-
 ## Why This Exists
 
 - `AGENTS.md` guidance can be forgotten. A trusted hook cannot.
@@ -292,37 +279,6 @@ python3 uninstall.py --target user
 ```
 
 Use `/hooks` to disable it manually if you prefer.
-
-## Default Policy
-
-The hook is intentionally selective.
-
-Allowed without asking RTK in every preset:
-
-```text
-echo, pwd, date, cd, mkdir, touch, chmod, git rev-parse, git branch, git remote
-```
-
-Candidate commands in the default preset:
-
-```text
-git status, git diff, git show, git log
-ls, tree, find, fd, rg, grep, wc, cat, head, tail
-npm/pnpm/yarn/bun tests
-cargo test/build/check
-pytest, vitest, jest, tsc, eslint, ruff, mypy
-go test/build
-```
-
-You can add local prefixes without editing code:
-
-```bash
-RTK_CODEX_EXTRA_CANDIDATE_PREFIXES="terraform,make test" codex
-RTK_CODEX_EXTRA_ALLOW_PREFIXES="git blame,my-tool" codex
-```
-
-The hook still asks `rtk rewrite` before blocking. If RTK has no rewrite, the
-raw command runs normally.
 
 ## Development
 
