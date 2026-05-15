@@ -226,26 +226,6 @@ RTK Codex Guard
 Some Codex versions still show numbered rows such as `Hook 1`; in that case,
 check the detail field `Status`/`Command` for `Suggesting RTK for noisy command`.
 
-## Test The Flow
-
-Ask Codex to run a command RTK can rewrite:
-
-```bash
-wc -l README.md
-```
-
-Expected first response:
-
-```text
-Command blocked by PreToolUse hook:
-RTK can reduce token-heavy output.
-Retry with: /root/.local/bin/rtk wc -l README.md.
-Need raw output? Retry with: /home/you/.local/bin/NO_RTK -- 'wc -l README.md'.
-```
-
-Codex should then retry with the RTK command. If the compact output is not
-enough, use the raw escape hatch shown in the message.
-
 ## Raw Output Escape Hatch
 
 The hook never blocks commands that use `NO_RTK` or `RTK_DISABLED=1`.
@@ -280,26 +260,3 @@ python3 uninstall.py --target user
 ```
 
 Use `/hooks` to disable it manually if you prefer.
-
-## Development
-
-```bash
-python3 -m unittest discover -s tests
-```
-
-## Current Codex Limitation
-
-Codex currently parses but does not reliably apply `PreToolUse.updatedInput`.
-That is why this project uses deny-with-suggestion instead of silent rewrite.
-
-## Relationship To RTK
-
-This is not official RTK and does not reimplement RTK filters. It delegates
-command decisions to:
-
-```bash
-rtk rewrite '<command>'
-```
-
-The project exists to provide a Codex-specific guard around RTK while Codex
-hooks lack silent command rewrite support.
