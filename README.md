@@ -17,6 +17,14 @@ Codex exactly how to retry with RTK.
 This is not official RTK. It is a Codex-specific companion project for people
 who want RTK behavior to be more explicit inside Codex.
 
+RTK's own README claims large token savings on common development commands:
+roughly 60-90% less token usage overall, with their example 30-minute coding
+session going from about 118k raw tokens to about 24k RTK-filtered tokens. The
+most noticeable examples they highlight are search and git commands around
+75-80% smaller, and test commands such as `pytest`, `go test`, `cargo test`, and
+`npm test` around 90% smaller. Actual savings will depend on the project and
+commands being run.
+
 ## Behavior
 
 ```text
