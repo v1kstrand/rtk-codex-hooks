@@ -1,12 +1,21 @@
 # RTK Codex Guard
 
-Codex-specific RTK hook adapter.
+Codex-focused guard hooks for [RTK](https://github.com/rtk-ai/rtk).
 
-RTK can reduce noisy command output, but RTK's Codex integration is currently
-instruction-based. That means Codex can forget to use RTK. Codex hooks also do
-not currently support silent command replacement, so this project uses the
-reliable Codex path: deny the noisy raw command and tell Codex exactly how to
-retry with RTK.
+[RTK](https://github.com/rtk-ai/rtk) is a tool for reducing noisy command
+output before it reaches an AI coding agent's context. That matters because
+common coding commands like `git diff`, `rg`, `pytest`, `cargo test`, and
+`npm test` can produce a lot of text. Less noise usually means less token
+usage and a cleaner working context for the agent.
+
+This repo exists because RTK's Codex setup is currently mostly instruction
+based: you tell Codex to use RTK, but Codex can still forget and run the raw
+command. RTK Codex Guard makes that harder to forget. It uses Codex hooks to
+catch supported noisy commands before they run, block the raw command, and tell
+Codex exactly how to retry with RTK.
+
+This is not official RTK. It is a Codex-specific companion project for people
+who want RTK behavior to be more explicit inside Codex.
 
 ## Behavior
 
