@@ -102,32 +102,68 @@ your other projects.
 
 RTK Codex Guard has three built-in presets:
 
-- **minimal:** only the most common noisy commands, such as `git diff`, `git log`,
-  `rg`, `grep`, `ls`, and `wc`.
-- **default:** the recommended balance. Adds common file viewing, search, test,
-  build, lint, and type-check commands.
-- **full:** the broadest mode. Also includes wider command families like
-  `cargo`, `npx`, `make`, `terraform`, `docker`, `kubectl`, and `aws`.
+| Preset | Best For | What It Covers |
+| --- | --- | --- |
+| `minimal` | First-time users or cautious projects | Common noisy exploration commands like `git diff`, `git log`, `rg`, `grep`, `ls`, and `wc` |
+| `default` | Most coding sessions | `minimal` plus common file viewing, search, test, build, lint, and type-check commands |
+| `full` | Users who want RTK used as often as possible | `default` plus broader command families like `cargo`, `npx`, `make`, `terraform`, `docker`, `kubectl`, and `aws` |
 
 The installer uses `default` unless you choose another preset:
 
 ```bash
 python3 /path/to/rtk-codex-hooks/install.py --target project --preset minimal
+python3 /path/to/rtk-codex-hooks/install.py --target project --preset default
 python3 /path/to/rtk-codex-hooks/install.py --target project --preset full
 ```
 
-Use `minimal` if you want the guard to be cautious. Use `full` if you want to
-push more command output through RTK whenever RTK knows how to rewrite it.
+Use `minimal` if you want the guard to be cautious. Use `default` if you are
+not sure. Use `full` if you are comfortable with the guard interrupting more
+commands and using `NO_RTK` when you need raw output.
+
+Important: presets decide which commands the guard asks RTK about. The hook
+still only blocks a command when RTK actually knows how to rewrite it.
 
 ### Project Config
 
-For a project-specific setup, you can also create:
+For a project-specific setup, you can fine-tune behavior with:
 
 ```text
 .codex/rtk-guard.json
 ```
 
-Example:
+Use this when one repo needs different behavior from your normal preset.
+
+Example 1: choose a preset for this repo:
+
+```json
+{
+  "preset": "minimal"
+}
+```
+
+Example 2: let one command stay raw:
+
+```json
+{
+  "preset": "default",
+  "allow_prefixes": ["git diff"]
+}
+```
+
+This means `git diff` will run normally instead of being routed through RTK.
+
+Example 3: add extra commands for this repo:
+
+```json
+{
+  "preset": "default",
+  "candidate_prefixes": ["terraform plan", "make test"]
+}
+```
+
+This means the guard will also ask RTK about `terraform plan` and `make test`.
+
+Example 4: combine both:
 
 ```json
 {
@@ -137,14 +173,16 @@ Example:
 }
 ```
 
-This means:
+Available config fields:
 
-- use the `default` preset
-- let raw `git diff` run without RTK
-- also ask RTK about `terraform plan` and `make test`
+| Field | Meaning |
+| --- | --- |
+| `preset` | One of `minimal`, `default`, or `full` |
+| `allow_prefixes` | Commands that should stay raw |
+| `candidate_prefixes` | Extra commands that should be checked with RTK |
 
-Project config is useful when one repo has special commands that should or
-should not go through RTK.
+The examples in `examples/rtk-guard.*.json` can be copied into a project's
+`.codex/rtk-guard.json`.
 
 ## Global Setup
 
