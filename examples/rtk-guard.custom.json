@@ -1,0 +1,10 @@
+{
+  "preset": "default",
+  "allow_prefixes": [
+    "git diff"
+  ],
+  "candidate_prefixes": [
+    "terraform plan",
+    "make test"
+  ]
+}

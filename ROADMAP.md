@@ -7,11 +7,12 @@
 - `NO_RTK` escape hatch for raw output.
 - Project/user installer that merges `hooks.json` and installs `NO_RTK`.
 - Default selective policy for likely-noisy command prefixes.
+- Minimal/default/full policy presets.
+- Project config file support for local allow and candidate prefixes.
 - Unit tests for hook decisions and installer output.
 
 ## Next
 
-- Add config file support for excludes and additional bypass prefixes.
 - Add end-to-end test notes for `/hooks` trust/activation.
 - Add screenshots or terminal transcripts for README.
 

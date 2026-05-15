@@ -25,6 +25,10 @@ class InstallConfigTests(unittest.TestCase):
         encoded = json.dumps(install.hooks_json())
         self.assertIn("PreToolUse", encoded)
 
+    def test_hooks_json_can_embed_preset(self):
+        handler = install.hooks_json(preset="minimal")["hooks"]["PreToolUse"][0]["hooks"][0]
+        self.assertIn("RTK_CODEX_PRESET=minimal", handler["command"])
+
     def test_merge_preserves_existing_hook_and_adds_guard(self):
         current = {
             "hooks": {

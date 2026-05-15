@@ -98,6 +98,54 @@ Review, trust, and enable the hook.
 This is the safest default because it does not change how Codex behaves in
 your other projects.
 
+### Choose A Preset
+
+RTK Codex Guard has three built-in presets:
+
+- **minimal:** only the most common noisy commands, such as `git diff`, `git log`,
+  `rg`, `grep`, `ls`, and `wc`.
+- **default:** the recommended balance. Adds common file viewing, search, test,
+  build, lint, and type-check commands.
+- **full:** the broadest mode. Also includes wider command families like
+  `cargo`, `npx`, `make`, `terraform`, `docker`, `kubectl`, and `aws`.
+
+The installer uses `default` unless you choose another preset:
+
+```bash
+python3 /path/to/rtk-codex-hooks/install.py --target project --preset minimal
+python3 /path/to/rtk-codex-hooks/install.py --target project --preset full
+```
+
+Use `minimal` if you want the guard to be cautious. Use `full` if you want to
+push more command output through RTK whenever RTK knows how to rewrite it.
+
+### Project Config
+
+For a project-specific setup, you can also create:
+
+```text
+.codex/rtk-guard.json
+```
+
+Example:
+
+```json
+{
+  "preset": "default",
+  "allow_prefixes": ["git diff"],
+  "candidate_prefixes": ["terraform plan", "make test"]
+}
+```
+
+This means:
+
+- use the `default` preset
+- let raw `git diff` run without RTK
+- also ask RTK about `terraform plan` and `make test`
+
+Project config is useful when one repo has special commands that should or
+should not go through RTK.
+
 ## Global Setup
 
 You can also install RTK Codex Guard globally:
@@ -194,13 +242,13 @@ Use `/hooks` to disable it manually if you prefer.
 
 The hook is intentionally selective.
 
-Allowed without asking RTK:
+Allowed without asking RTK in every preset:
 
 ```text
 echo, pwd, date, cd, mkdir, touch, chmod, git rev-parse, git branch, git remote
 ```
 
-Candidate commands:
+Candidate commands in the default preset:
 
 ```text
 git status, git diff, git show, git log
@@ -209,7 +257,6 @@ npm/pnpm/yarn/bun tests
 cargo test/build/check
 pytest, vitest, jest, tsc, eslint, ruff, mypy
 go test/build
-docker, kubectl, aws
 ```
 
 You can add local prefixes without editing code:

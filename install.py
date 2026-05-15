@@ -12,6 +12,9 @@ import stat
 import sys
 import time
 
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent / "src"))
+from rtk_codex_hooks import policy
+
 
 ROOT = pathlib.Path(__file__).resolve().parent
 HOOK = ROOT / "src" / "rtk_codex_hooks" / "hook.py"
@@ -44,6 +47,11 @@ def main() -> int:
         action="store_true",
         help="Do not install NO_RTK into ~/.local/bin",
     )
+    parser.add_argument(
+        "--preset",
+        choices=["minimal", "default", "full"],
+        help="Use a built-in policy preset: minimal, default, or full",
+    )
     args = parser.parse_args()
 
     no_rtk_bin = str(WRAPPER)
@@ -67,7 +75,7 @@ def main() -> int:
     else:
         current = {"hooks": {}}
 
-    new_config = hooks_json(no_rtk_bin=no_rtk_bin, rtk_bin=rtk_bin)
+    new_config = hooks_json(no_rtk_bin=no_rtk_bin, rtk_bin=rtk_bin, preset=args.preset)
     merged = new_config if args.replace else merge_hooks(current, new_config)
     target_file.write_text(json.dumps(merged, indent=2) + "\n", encoding="utf-8")
 
@@ -108,7 +116,11 @@ def read_json(path: pathlib.Path) -> dict:
     return data
 
 
-def hooks_json(no_rtk_bin: str | None = None, rtk_bin: str | None = None) -> dict:
+def hooks_json(
+    no_rtk_bin: str | None = None,
+    rtk_bin: str | None = None,
+    preset: str | None = None,
+) -> dict:
     no_rtk_bin = no_rtk_bin or str(WRAPPER)
     return {
         "hooks": {
@@ -120,7 +132,11 @@ def hooks_json(no_rtk_bin: str | None = None, rtk_bin: str | None = None) -> dic
                     "hooks": [
                         {
                             "type": "command",
-                            "command": hook_command(no_rtk_bin=no_rtk_bin, rtk_bin=rtk_bin),
+                            "command": hook_command(
+                                no_rtk_bin=no_rtk_bin,
+                                rtk_bin=rtk_bin,
+                                preset=preset,
+                            ),
                             "timeout": 5,
                             "statusMessage": STATUS_MESSAGE,
                         }
@@ -131,8 +147,14 @@ def hooks_json(no_rtk_bin: str | None = None, rtk_bin: str | None = None) -> dic
     }
 
 
-def hook_command(no_rtk_bin: str | None = None, rtk_bin: str | None = None) -> str:
+def hook_command(
+    no_rtk_bin: str | None = None,
+    rtk_bin: str | None = None,
+    preset: str | None = None,
+) -> str:
     env = ["RTK_CODEX_HOOK_MODE=deny"]
+    if preset:
+        env.append(f"RTK_CODEX_PRESET={shell_quote(preset)}")
     if rtk_bin:
         env.append(f"RTK_BIN={shell_quote(rtk_bin)}")
     if no_rtk_bin:

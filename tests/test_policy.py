@@ -1,6 +1,8 @@
 import pathlib
 import sys
+import tempfile
 import unittest
+from unittest import mock
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1] / "src"))
 
@@ -23,3 +25,44 @@ class PolicyTests(unittest.TestCase):
         self.assertTrue(policy.should_consider("FOO=bar git diff"))
         self.assertFalse(policy.should_consider("FOO=bar echo hi"))
 
+    def test_minimal_preset_skips_default_candidates(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            config_dir = pathlib.Path(tmp) / ".codex"
+            config_dir.mkdir()
+            (config_dir / "rtk-guard.json").write_text(
+                '{"preset": "minimal"}\n',
+                encoding="utf-8",
+            )
+            self.assertTrue(policy.should_consider("git diff", cwd=tmp))
+            self.assertFalse(policy.should_consider("cargo test", cwd=tmp))
+
+    def test_full_preset_considers_broad_commands(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            config_dir = pathlib.Path(tmp) / ".codex"
+            config_dir.mkdir()
+            (config_dir / "rtk-guard.json").write_text(
+                '{"preset": "full"}\n',
+                encoding="utf-8",
+            )
+            self.assertTrue(policy.should_consider("terraform plan", cwd=tmp))
+            self.assertTrue(policy.should_consider("make test", cwd=tmp))
+
+    def test_config_can_add_candidate_and_allow_prefixes(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            config_dir = pathlib.Path(tmp) / ".codex"
+            config_dir.mkdir()
+            (config_dir / "rtk-guard.json").write_text(
+                (
+                    "{"
+                    '"candidate_prefixes": ["custom noisy"],'
+                    '"allow_prefixes": ["git diff"]'
+                    "}\n"
+                ),
+                encoding="utf-8",
+            )
+            self.assertTrue(policy.should_consider("custom noisy command", cwd=tmp))
+            self.assertFalse(policy.should_consider("git diff", cwd=tmp))
+
+    @mock.patch.dict("os.environ", {"RTK_CODEX_PRESET": "minimal"})
+    def test_env_preset(self):
+        self.assertFalse(policy.should_consider("cargo test"))

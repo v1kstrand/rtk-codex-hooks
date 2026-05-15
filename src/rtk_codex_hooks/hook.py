@@ -79,7 +79,7 @@ def decide(payload: dict) -> Decision:
     if is_bypass(command):
         return Decision("allow")
 
-    if not policy.should_consider(command):
+    if not policy.should_consider(command, cwd=payload.get("cwd")):
         return Decision("allow")
 
     rewritten = rtk_rewrite(command)
